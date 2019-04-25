@@ -1,0 +1,14 @@
+= Deploying Ci Pipeline
+
+this will walk through setting up a CI pipeline to build images with pack and use harbor as a registry.
+
+
+== steps
+
+1. copy the `credentials.example.yml` to `credentials.yml` and fill in the necessary values
+
+1. set the pipeline
+
+----
+fly -t <your-concourse> sp -p spring-music-ci -c ci/cnb-pipeline.yml -l ci/credentials.yml
+fly -t <your-concourse> up-p spring-music-ci

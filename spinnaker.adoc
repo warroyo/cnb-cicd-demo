@@ -1,0 +1,86 @@
+= Installing  Spinnaker
+
+== Requirements
+
+* working k8s cluster
+* helm
+* kubectl
+
+== steps
+
+1. follow steps here for your provider to install an https://kubernetes.github.io/ingress-nginx/deploy/#prerequisite-generic-deployment-command[nginx ingress]
+
+1. run the below command to get the ip address of the ingress LB.
+
+----
+kubectl describe svc ingress-nginx --namespace ingress-nginx | grep "LoadBalancer Ingress:"
+----
+
+1. if using GCP you can create the DNS using the below commands
+
+----
+#create the zone
+gcloud dns --project=<your-project> managed-zones create <zone-name> --description='k8s ingress spinnaker' --dns-name=<your-dns-zone>
+
+#start a transaction on the zone
+gcloud dns record-sets transaction start --zone=<zone-name>
+
+#create first record
+gcloud dns record-sets transaction add \                                                                                                   
+    --zone=<zone-name> --type=A --ttl 300 \
+    --name="spinnaker.<domain>" "<lb-ip>"
+
+#create wildcard
+gcloud dns record-sets transaction add \                                                                                                   
+    --zone=<zone-name> --type=A --ttl 300 \
+    --name="*.spinnaker.<domain>" "<lb-ip>"
+
+#close transaction
+gcloud dns record-sets transaction execute --zone=<zone-name>
+----
+
+1. create some certs for spinnaker
+
+----
+openssl req -x509 \
+   -nodes -newkey rsa:4096 -days 365 \
+   -keyout spin-key.pem \
+   -out spin-cert.pem \
+   -subj "/C=US/ST=Colorado/L=Denver/O=Pivotal/OU=K8s/CN=spinnaker.<domain>"
+
+
+openssl req -x509 \
+   -nodes -newkey rsa:4096 -days 365 \
+   -keyout spin-api-key.pem \
+   -out spin-api-cert.pem \
+   -subj "/C=US/ST=Colorado/L=Denver/O=Pivotal/OU=K8s/CN=api.spinnaker.<domain>"
+
+----
+
+
+
+1. create a  namespace for spinnaker and set it to your default namespace
+
+----
+kubectl create ns spinnaker
+kubectl config set-context $(kubectl config current-context) --namespace=spinnaker
+----
+
+1. create k8s secrets for the certs
+----
+kubectl create secret tls spinnaker-ingress-cert --key spin-key.pem --cert spin-cert.pem
+kubectl create secret tls spinnaker-api-ingress-cert --key spin-api-key.pem --cert spin-api-cert.pem
+----
+
+2. copy the `spin-values.example.yml` to `spin-values.yml` and modify it for your use for use with the helm chart
+
+
+3. install the helm chart with our values.
+
+----
+helm install --name cd stable/spinnaker -f spin-values.yml --namespace spinnaker
+----
+
+
+
+

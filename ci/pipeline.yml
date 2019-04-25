@@ -1,0 +1,74 @@
+resource_types:
+- name: harbor-scan
+  type: docker-image
+  source:
+    repository: warroyo90/harbor-scan-resource
+    tag: 1.0.0
+
+
+
+resources:
+- name: spring-music
+  type: git
+  source:
+    uri: https://github.com/cloudfoundry-samples/spring-music.git
+    branch: master
+
+- name: scan
+  type: harbor-scan
+  source:
+    username: ((harbor_user))
+    password: ((harbor_password))
+    harbor_host: ((harbor_registry))
+
+jobs:
+
+- name: ci
+  serial: true
+  public: false
+  plan:
+  - aggregate:
+    - get: spring-music
+      trigger: true
+  - task: pack
+    privileged: true
+    input_mapping:
+      code: spring-music
+    params:
+      HARBOR_USER: ((harbor_user))
+      HARBOR_PASSWORD: ((harbor_password))
+      HARBOR_REGISTRY: ((harbor_registry))
+      DOCKER_OPTS: "--insecure-registry ((harbor_registry))"
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: warroyo90/concourse-dcind}
+      inputs:
+        - name: code
+      run:
+        path: entrypoint.sh
+        args:
+        - bash
+        - -c
+        - |
+            cd code
+            wget https://github.com/buildpack/pack/releases/download/v0.1.0/pack-v0.1.0-linux.tgz
+            tar xvf pack-v0.1.0-linux.tgz
+            rm pack-v0.1.0-linux.tgz
+            echo ${HARBOR_PASSWORD} > password.txt
+            cat password.txt | docker login ${HARBOR_REGISTRY} -u ${HARBOR_USER} --password-stdin
+            ./pack build ${HARBOR_REGISTRY}/library/spring-music:1.0 --builder cloudfoundry/cnb:bionic --env BP_JAVA_VERSION='1.8.*'
+            docker push ${HARBOR_REGISTRY}/library/spring-music:1.0
+
+- name: image-scan
+  serial: true
+  plan:
+  - get: spring-music
+    trigger: true
+    passed: [ci]
+  - put: scan
+    params:
+      repository: ((harbor_registry))/library/spring-music
+      harbor_scan_thresholds: [{"severity": 4,"count": 10},{"severity": 5,"count": 1}]
+      tag: '1.0'

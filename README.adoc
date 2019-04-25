@@ -1,0 +1,22 @@
+= Continous Delivery with CNB & Spinnaker
+
+This is a demo of CI/CD using [Cloud Native Buildpacks] [Concourse] [Spinnaker] [K8s] & [Cloudfoundry] . The diagram below should explain the flow of what is going to be achieved in this demo.
+
+
+== Requirements
+
+* Cloud foundry foundation
+* K8s cluster
+* Harbor 
+* Councourse
+* Helm
+* Kubectl
+
+
+== Setup
+
+follow the linked guides to setup the different parts of the demo
+
+1. link:spinnaker.adoc[Create a Spinnaker instance on k8s]
+2. Deploy concourse ci pipleine
+3. 

@@ -1,0 +1,43 @@
+kubeConfig:
+  omittedNameSpaces:
+  - kube-system
+  - kube-public
+  - pks-system
+  - ingress
+  - spinnaker
+
+halyard:
+  image:
+    repository: gcr.io/spinnaker-marketplace/halyard
+    tag: stable
+  # set to the latest spinnaker release (e.g. 1.13.0), or to 
+  # “master-latest-unvalidated” to get latest code from master
+  spinnakerVersion: 1.13.5
+  additionalScripts:
+    create: true
+    data:
+      # configure Cloud Foundry provider
+      provider-cloudfoundry.sh: |-
+        $HAL_COMMAND config provider cloudfoundry enable
+        $HAL_COMMAND config provider cloudfoundry account add <CF account name> \
+        --api <CF API endpoint> --user <CF user> --password <CF password> \
+        --environment dev
+      # optionally add any additional Halyard configuration 
+ingress:
+  enabled: true
+  host: spinnaker.<Ops Manager Domain>
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  tls:
+  - hosts:
+    - spinnaker.<Ops Manager Domain>
+    secretName: spinnaker-ingress-cert
+ingressGate:
+  enabled: true
+  host: api.spinnaker.<Ops Manager Domain>
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  tls:
+  - hosts:
+    - api.spinnaker.<Ops Manager Domain>
+    secretName: spinnaker-api-ingress-cert
