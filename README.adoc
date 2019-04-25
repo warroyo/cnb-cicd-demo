@@ -18,5 +18,4 @@ This is a demo of CI/CD using [Cloud Native Buildpacks] [Concourse] [Spinnaker] 
 follow the linked guides to setup the different parts of the demo
 
 1. link:spinnaker.adoc[Create a Spinnaker instance on k8s]
-2. Deploy concourse ci pipleine
-3. 
+1. link:concourse.adoc[Deploy concourse ci pipleine]
