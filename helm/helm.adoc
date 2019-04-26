@@ -1,0 +1,15 @@
+= creating the helm chart for spring-music
+
+
+== steps
+
+1. add harbor as a helm chart repo
+-----
+helm repo add  --username=<user> --password=<passowrd> myrepo https://harbor.domain/chartrepo
+-----
+
+2. install the helm push plugin
+
+----
+helm plugin install https://github.com/chartmuseum/helm-push
+----

@@ -72,3 +72,4 @@ jobs:
       repository: ((harbor_registry))/library/spring-music
       harbor_scan_thresholds: [{"severity": 4,"count": 10},{"severity": 5,"count": 1}]
       tag: '1.0'
+

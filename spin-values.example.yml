@@ -6,11 +6,27 @@ kubeConfig:
   - ingress
   - spinnaker
 
+dockerRegistries:
+- name: dockerhub
+  address: index.docker.io
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+- name: harbor
+  address: <harbor-url>
+  username: admin
+  password: '<harbor-pass>'
+  repositories:
+    - library
+  
+
 halyard:
   image:
     repository: gcr.io/spinnaker-marketplace/halyard
-    tag: stable
-  # set to the latest spinnaker release (e.g. 1.13.0), or to 
+    tag: nightly
+  # set to the latest spinnaker release (e.g. 1.13.5), or to 
   # “master-latest-unvalidated” to get latest code from master
   spinnakerVersion: 1.13.5
   additionalScripts:
@@ -19,25 +35,44 @@ halyard:
       # configure Cloud Foundry provider
       provider-cloudfoundry.sh: |-
         $HAL_COMMAND config provider cloudfoundry enable
-        $HAL_COMMAND config provider cloudfoundry account add <CF account name> \
-        --api <CF API endpoint> --user <CF user> --password <CF password> \
-        --environment dev
+        $HAL_COMMAND config provider cloudfoundry account add dev-cf \
+        --api <cf-api-url> --user <cf-user> --password '<cf-password>' \
+        --environment dev --appsManagerUri <app-manager-uri>
+      ci-concourse.sh: |-
+        $HAL_COMMAND config ci concourse enable
+        echo '<concourse-pass>' | $HAL_COMMAND config ci concourse master add <concourse-name> \
+        --url '<concourse-url>' --username <concourse-user> --password
+      github-auth.sh: |-
+        $HAL_COMMAND config security authn oauth2 edit \
+        --client-id <github-client-id> \
+        --client-secret <github-client-secret> \
+        --provider github
+        $HAL_COMMAND config security authn oauth2 edit --pre-established-redirect-uri https://api.spinnaker.<your-domain>/login
+        $HAL_COMMAND config security ui edit --override-base-url https://spinnaker.<your-domain>
+        $HAL_COMMAND config security api edit --override-base-url https://api.spinnaker.<your-domain>
+        $HAL_COMMAND config security authn oauth2 enable
+      # until the bug here https://github.com/spinnaker/spinnaker/issues/3722 is fixed we need to use secure registries
+      # registry.sh: |-
+      #   $HAL_COMMAND config provider docker-registry account edit harbor --insecure-registry true
       # optionally add any additional Halyard configuration 
+      artifact.sh: |-
+        $HAL_COMMAND config artifact helm enable
+        echo '<harbor-pass>' | $HAL_COMMAND config artifact helm account add harbor-helm --repository <harbor-url>/chartrepo --username <harbor-user> --password
 ingress:
   enabled: true
-  host: spinnaker.<Ops Manager Domain>
+  host: spinnaker.gcp.warroyo.com
   annotations:
     kubernetes.io/ingress.class: nginx
   tls:
   - hosts:
-    - spinnaker.<Ops Manager Domain>
+    - spinnaker.gcp.warroyo.com
     secretName: spinnaker-ingress-cert
 ingressGate:
   enabled: true
-  host: api.spinnaker.<Ops Manager Domain>
+  host: api.spinnaker.gcp.warroyo.com
   annotations:
     kubernetes.io/ingress.class: nginx
   tls:
   - hosts:
-    - api.spinnaker.<Ops Manager Domain>
+    - api.spinnaker.gcp.warroyo.com
     secretName: spinnaker-api-ingress-cert
