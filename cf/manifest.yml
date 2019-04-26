@@ -1,0 +1,5 @@
+---
+applications:
+- name: spring-music
+  docker:
+    image: harbor.infra.aws.warroyo.com/library/spring-music
