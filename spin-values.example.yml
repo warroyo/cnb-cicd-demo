@@ -57,7 +57,9 @@ halyard:
       # optionally add any additional Halyard configuration 
       artifact.sh: |-
         $HAL_COMMAND config artifact helm enable
+        $HAL_COMMAND config artifact github enable
         echo '<harbor-pass>' | $HAL_COMMAND config artifact helm account add harbor-helm --repository <harbor-url>/chartrepo --username <harbor-user> --password
+        echo '<github token>' | $HAL_COMMAND config artifact github account add <account-name> --token
 ingress:
   enabled: true
   host: spinnaker.gcp.warroyo.com
