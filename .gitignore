@@ -1,3 +1,4 @@
 *.pem
 spin-values.yml
 credentials.yml
+spring-music-values.yaml

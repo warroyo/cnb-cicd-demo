@@ -13,3 +13,12 @@ helm repo add  --username=<user> --password=<passowrd> myrepo https://harbor.dom
 ----
 helm plugin install https://github.com/chartmuseum/helm-push
 ----
+
+3. tar and push the helm chart
+
+----
+cd helm
+tar -zcf spring-music.tgz spring-music
+helm push spring-music.tgz harbor
+rm spring-music.tgz
+----
