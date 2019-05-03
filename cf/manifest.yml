@@ -1,7 +1,7 @@
 ---
 applications:
 - name: spring-music
-  buildpacks:
-    - binary_buildpack 
+  # buildpacks:
+  #   - binary_buildpack 
   docker:
     image: harbor.infra.aws.warroyo.com/library/spring-music:1.0
