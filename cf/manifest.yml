@@ -1,5 +1,7 @@
 ---
 applications:
 - name: spring-music
+  routes:
+    - spring-music-app.apps.pcfone.io
   env:
     test: test

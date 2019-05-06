@@ -61,9 +61,7 @@ halyard:
         $HAL_COMMAND config artifact s3 enable
         echo '<harbor-pass>' | $HAL_COMMAND config artifact helm account add harbor-helm --repository <harbor-url>/chartrepo --username <harbor-user> --password
         echo '<github token>' | $HAL_COMMAND config artifact github account add <account-name> --token
-        export AWS_ACCESS_KEY_ID='<access key>'
-        export AWS_SECRET_ACCESS_KEY='<secret-key>'
-        $HAL_COMMAND config artifact s3 account get <account> || $HAL_COMMAND config artifact s3 account add <account> --region <region>
+        $HAL_COMMAND config artifact s3 account get <account> || echo '<secret-key>' $HAL_COMMAND config artifact s3 account add <account> --aws-access-key-id '<access-key>' --region <region> --aws-secret-access-key
 ingress:
   enabled: true
   host: spinnaker.gcp.warroyo.com

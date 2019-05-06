@@ -5,12 +5,13 @@ This is a demo of CI/CD using [Cloud Native Buildpacks] [Concourse] [Spinnaker] 
 
 == Requirements
 
-* Cloud foundry foundation
+* Cloud foundry platform
 * K8s cluster
 * Harbor 
 * Councourse
 * Helm
 * Kubectl
+* s3 bucket
 
 
 == Setup
