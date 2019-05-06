@@ -1,0 +1,89 @@
+---
+# Source: spring-music/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: RELEASE-NAME-spring-music
+  labels:
+    app: spring-music
+    chart: spring-music-1.0.0
+    release: RELEASE-NAME
+    heritage: Tiller
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+      name: http
+  selector:
+    app: spring-music
+    release: RELEASE-NAME
+
+---
+# Source: spring-music/templates/deployment.yaml
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  namespace: spinnaker
+  name: RELEASE-NAME-spring-music
+  labels:
+    app: spring-music
+    chart: spring-music-1.0.0
+    release: RELEASE-NAME
+    heritage: Tiller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-music
+      release: RELEASE-NAME
+  template:
+    metadata:
+      labels:
+        app: spring-music
+        release: RELEASE-NAME
+    spec:
+      containers:
+        - name: spring-music
+          image: "harbor.infra.aws.warroyo.com/library/spring-music:1.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          resources:
+            null
+
+
+---
+# Source: spring-music/templates/ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: RELEASE-NAME-spring-music
+  labels:
+    app: spring-music
+    chart: spring-music-1.0.0
+    release: RELEASE-NAME
+    heritage: Tiller
+  annotations:
+    kubernetes.io/ingress.class: nginx
+
+spec:
+  rules:
+    - host: "spring-music.spinnaker.gcp.warroyo.com"
+      http:
+        paths:
+          - path:
+            backend:
+              serviceName: RELEASE-NAME-spring-music
+              servicePort: 8
