@@ -86,4 +86,4 @@ spec:
           - path:
             backend:
               serviceName: RELEASE-NAME-spring-music
-              servicePort: 8
+              servicePort: 80
