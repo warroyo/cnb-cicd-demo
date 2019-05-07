@@ -40,25 +40,3 @@ spec:
               port: 8080
           resources:
             null
-
-
----
-# Source: spring-music/templates/ingress.yam
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: spring-music
-  labels:
-    app: spring-music
-  annotations:
-    kubernetes.io/ingress.class: nginx
-
-spec:
-  rules:
-    - host: "spring-music.spinnaker.gcp.warroyo.com"
-      http:
-        paths:
-          - path:
-            backend:
-              serviceName: spring-music
-              servicePort: 80
