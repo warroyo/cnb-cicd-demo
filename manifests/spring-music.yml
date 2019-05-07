@@ -2,27 +2,25 @@
 
 ---
 # Source: spring-music/templates/deployment.yaml
-apiVersion: apps/v1beta2
-kind: Deployment
+apiVersion: apps/v1
+kind: ReplicaSet
 metadata:
   namespace: staging
-  name: RELEASE-NAME-spring-music
+  name: pring-music
+  annotations:
+    strategy.spinnaker.io/max-version-history: '2'
+    traffic.spinnaker.io/load-balancers: '["service my-service"]'
   labels:
     app: spring-music
-    chart: spring-music-1.0.0
-    release: RELEASE-NAME
-    heritage: Tiller
 spec:
   replicas: 3
   selector:
     matchLabels:
       app: spring-music
-      release: RELEASE-NAME
   template:
     metadata:
       labels:
         app: spring-music
-        release: RELEASE-NAME
     spec:
       containers:
         - name: spring-music
@@ -49,12 +47,9 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: RELEASE-NAME-spring-music
+  name: spring-music
   labels:
     app: spring-music
-    chart: spring-music-1.0.0
-    release: RELEASE-NAME
-    heritage: Tiller
   annotations:
     kubernetes.io/ingress.class: nginx
 
@@ -65,5 +60,5 @@ spec:
         paths:
           - path:
             backend:
-              serviceName: RELEASE-NAME-spring-music
+              serviceName: spring-music
               servicePort: 80
