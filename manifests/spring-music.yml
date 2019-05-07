@@ -65,7 +65,7 @@ spec:
 
 
 ---
-# Source: spring-music/templates/ingress.yaml
+# Source: spring-music/templates/ingress.yam
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
