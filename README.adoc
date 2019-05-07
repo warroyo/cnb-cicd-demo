@@ -20,3 +20,5 @@ follow the linked guides to setup the different parts of the demo
 
 1. link:spinnaker.adoc[Create a Spinnaker instance on k8s]
 1. link:concourse.adoc[Deploy concourse ci pipleine]
+1. link:k8s.adoc[setup k8s for deployments]
+1. link:pipeline.adoc[create the spinnaker pipeline]

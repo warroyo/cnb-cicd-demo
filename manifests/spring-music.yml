@@ -1,24 +1,4 @@
----
-# Source: spring-music/templates/service.yaml
-apiVersion: v1
-kind: Service
-metadata:
-  name: RELEASE-NAME-spring-music
-  labels:
-    app: spring-music
-    chart: spring-music-1.0.0
-    release: RELEASE-NAME
-    heritage: Tiller
-spec:
-  type: ClusterIP
-  ports:
-    - port: 80
-      targetPort: 8080
-      protocol: TCP
-      name: http
-  selector:
-    app: spring-music
-    release: RELEASE-NAME
+
 
 ---
 # Source: spring-music/templates/deployment.yaml
@@ -33,7 +13,7 @@ metadata:
     release: RELEASE-NAME
     heritage: Tiller
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: spring-music
