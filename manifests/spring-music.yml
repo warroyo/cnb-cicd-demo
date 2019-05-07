@@ -1,15 +1,12 @@
-
-
 ---
-# Source: spring-music/templates/deployment.yaml
 apiVersion: apps/v1
 kind: ReplicaSet
 metadata:
   namespace: staging
-  name: pring-music
+  name: spring-music
   annotations:
     strategy.spinnaker.io/max-version-history: '2'
-    traffic.spinnaker.io/load-balancers: '["service my-service"]'
+    traffic.spinnaker.io/load-balancers: '["service spring-music"]'
   labels:
     app: spring-music
 spec:
