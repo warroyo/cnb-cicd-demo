@@ -3,7 +3,8 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: spring-music
+  name: spring-music-ingress
+  namespace: staging
   labels:
     app: spring-music
   annotations:
@@ -16,5 +17,5 @@ spec:
         paths:
           - path:
             backend:
-              serviceName: spring-music
+              serviceName: spring-music-service
               servicePort: 80

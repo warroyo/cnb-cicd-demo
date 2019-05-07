@@ -6,7 +6,7 @@ metadata:
   name: spring-music
   annotations:
     strategy.spinnaker.io/max-version-history: '2'
-    traffic.spinnaker.io/load-balancers: '["service spring-music"]'
+    traffic.spinnaker.io/load-balancers: '["service spring-music-service", "ingress spring-music-ingress"]'
   labels:
     appName: spring-music
 spec:
