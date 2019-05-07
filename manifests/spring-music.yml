@@ -5,7 +5,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  namespace: spinnaker
+  namespace: staging
   name: RELEASE-NAME-spring-music
   labels:
     app: spring-music
