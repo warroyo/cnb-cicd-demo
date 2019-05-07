@@ -8,16 +8,16 @@ metadata:
     strategy.spinnaker.io/max-version-history: '2'
     traffic.spinnaker.io/load-balancers: '["service spring-music"]'
   labels:
-    app: spring-music
+    appName: spring-music
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: spring-music
+      appName: spring-music
   template:
     metadata:
       labels:
-        app: spring-music
+        appName: spring-music
     spec:
       containers:
         - name: spring-music
