@@ -1,10 +1,10 @@
 apiVersion: apps/v1beta2
-kind: Deployment
+kind: ReplicaSet
 metadata:
   namespace: {{ .Release.Namespace }}
   name: {{ include "spring-music.fullname" . }}
   labels:
-    app: {{ include "spring-music.name" . }}
+    appName: {{ include "spring-music.name" . }}
     chart: {{ include "spring-music.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,12 +12,12 @@ spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "spring-music.name" . }}
+      appName: {{ include "spring-music.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ include "spring-music.name" . }}
+        appName: {{ include "spring-music.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:

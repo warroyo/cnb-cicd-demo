@@ -10,7 +10,7 @@ metadata:
 
 spec:
   rules:
-    - host: "spring-music.spinnaker.gcp.warroyo.com"
+    - host: "spring-music-staging.spinnaker.gcp.warroyo.com"
       http:
         paths:
           - path:

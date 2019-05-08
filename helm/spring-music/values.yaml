@@ -8,15 +8,3 @@ image:
   repository: myharbor.com/library/spring-music
   tag: '1.0'
   pullPolicy: IfNotPresent
-
-service:
-  type: ClusterIP
-  externalPort: 80
-  internalPort: 8080
-
-ingress:
-  enabled: true
-  hosts: 
-    - spring-music.your.domain.com
-  annotations:
-    kubernetes.io/ingress.class: nginx

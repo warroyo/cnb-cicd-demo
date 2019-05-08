@@ -1,0 +1,8 @@
+---
+applications:
+- name: spring-music
+  routes:
+  - route: spring-music-staging.apps.pcfone.io
+  env:
+    test: test
+  instances: 2
