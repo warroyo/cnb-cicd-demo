@@ -8,3 +8,6 @@ image:
   repository: harbor.infra.aws.warroyo.com/library/spring-music
   tag: '1.0'
   pullPolicy: IfNotPresent
+service:
+  externalPort: 80
+  internalPort: 8080
