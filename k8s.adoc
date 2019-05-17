@@ -9,17 +9,9 @@ kubectl create ns staging
 kubectl create ns production
 -----
 
-2. install the helm push plugin
+1. create services and ingress
 
 ----
-helm plugin install https://github.com/chartmuseum/helm-push
-----
-
-3. tar and push the helm chart
 
 ----
-cd helm
-tar -zcf spring-music.tgz spring-music
-helm push spring-music.tgz harbor
-rm spring-music.tgz
-----
+

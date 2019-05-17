@@ -1,0 +1,20 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: harbor.gcp.warroyo.com
+  namespace: harbor
+spec:
+  secretName: harbor-tls-prod
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: 'harbor.gcp.warroyo.com'
+  dnsNames:
+  - '*.harbor.gcp.warroyo.com'
+  acme:
+    config:
+    - dns01:
+        provider: dns
+      domains:
+      - '*.harbor.gcp.warroyo.com'
+      - harbor.gcp.warroyo.com

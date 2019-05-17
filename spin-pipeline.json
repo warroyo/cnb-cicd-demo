@@ -1,0 +1,332 @@
+{
+  "expectedArtifacts": [
+    {
+      "defaultArtifact": {
+        "artifactAccount": "harbor-helm",
+        "id": "76709f20-3b72-4d7f-aca7-24bc52f00827",
+        "name": "library/spring-music",
+        "reference": "harbor-helm",
+        "type": "helm/chart",
+        "version": "1.0.0"
+      },
+      "displayName": "spring-music-helm",
+      "id": "c5c8770b-ffee-4ded-abce-d99c05085012",
+      "matchArtifact": {
+        "artifactAccount": "harbor-helm",
+        "id": "9f38dd8b-a3a4-47a2-a1c6-c64054533f7f",
+        "name": "library/spring-music",
+        "reference": "harbor-helm",
+        "type": "helm/chart",
+        "version": "1.0.0"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": false
+    },
+    {
+      "defaultArtifact": {
+        "id": "33f30a66-b55e-4f15-b460-5cbb3471d433",
+        "name": "helm/spring-music-staging.yaml",
+        "reference": "https://api.github.com/repos/warroyo/cnb-cicd-demo/contents/helm/spring-music-staging.yaml",
+        "type": "github/file",
+        "version": "master"
+      },
+      "displayName": "staging-values",
+      "id": "b5051408-654c-4042-b134-67ad3f60ebab",
+      "matchArtifact": {
+        "id": "75b4b11b-dd14-483d-912c-a7c0ea66870e",
+        "name": "helm/spring-music-staging.yaml",
+        "type": "github/file"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": false
+    },
+    {
+      "defaultArtifact": {
+        "id": "a6582b8a-dad3-4e1e-90a2-a703b05fe6f5",
+        "name": "helm/spring-music-prod.yaml",
+        "reference": "https://api.github.com/repos/warroyo/cnb-cicd-demo/contents/helm/spring-music-prod.yaml",
+        "type": "github/file",
+        "version": "master"
+      },
+      "displayName": "prod-values",
+      "id": "86f72c09-810b-44c4-bc66-45e8cfb8b00f",
+      "matchArtifact": {
+        "id": "9cef7001-a4ea-46d7-b084-bdd4155e2e5f",
+        "name": "helm/spring-music-prod.yaml",
+        "type": "github/file"
+      },
+      "useDefaultArtifact": true,
+      "usePriorArtifact": false
+    }
+  ],
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "warroyo",
+  "limitConcurrent": true,
+  "stages": [
+    {
+      "clusters": [
+        {
+          "account": "pcfone",
+          "application": "springmusic",
+          "applicationArtifact": {
+            "artifact": {
+              "artifactAccount": "pa-warroyo",
+              "id": "35608560-8e90-433a-944e-9378f4436811",
+              "reference": "s3://warroyo-app-artifacts/spring-music/spring-music-1.0.jar",
+              "type": "s3/object"
+            }
+          },
+          "cloudProvider": "cloudfoundry",
+          "delayBeforeDisableSec": 0,
+          "delayBeforeScaleDownSec": 0,
+          "freeFormDetails": "spring",
+          "manifest": {
+            "artifact": {
+              "artifactAccount": "warroyo",
+              "customKind": true,
+              "id": "18cdb12e-e698-495d-895a-f569dd9664e5",
+              "name": "cf/manifest-staging.yml",
+              "reference": "https://api.github.com/repos/warroyo/cnb-cicd-demo/contents/cf/manifest-staging.yml",
+              "type": "github/file"
+            }
+          },
+          "provider": "cloudfoundry",
+          "region": "pivot-warroyo > staging",
+          "rollback": {
+            "onFailure": true
+          },
+          "stack": "spring",
+          "startApplication": true,
+          "strategy": "highlander"
+        }
+      ],
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "name": "Deploy-PCF-staging",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "type": "deploy"
+    },
+    {
+      "failPipeline": true,
+      "instructions": "is it safe to go to prod?",
+      "judgmentInputs": [],
+      "name": "Manual Judgment",
+      "notifications": [],
+      "propagateAuthenticationContext": true,
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "1",
+        "7"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "evaluateOverrideExpressions": false,
+      "expectedArtifacts": [
+        {
+          "defaultArtifact": {
+            "type": "embedded/base64"
+          },
+          "displayName": "spring-music-stage-k8-manifest",
+          "id": "d8e09704-7f33-401c-a2e2-ada5a63f92c2",
+          "matchArtifact": {
+            "kind": "base64",
+            "name": "spring-music-stage-k8-manifest",
+            "type": "embedded/base64"
+          },
+          "useDefaultArtifact": false
+        }
+      ],
+      "failPipeline": false,
+      "inputArtifacts": [
+        {
+          "account": "harbor-helm",
+          "id": "c5c8770b-ffee-4ded-abce-d99c05085012"
+        },
+        {
+          "account": "warroyo",
+          "id": "b5051408-654c-4042-b134-67ad3f60ebab"
+        }
+      ],
+      "name": "Bake (Manifest) -staging",
+      "namespace": "staging",
+      "outputName": "spring-music",
+      "overrides": {},
+      "refId": "6",
+      "requisiteStageRefIds": [],
+      "templateRenderer": "HELM2",
+      "type": "bakeManifest"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "manifestArtifactAccount": "embedded-artifact",
+      "manifestArtifactId": "d8e09704-7f33-401c-a2e2-ada5a63f92c2",
+      "moniker": {
+        "app": "springmusic"
+      },
+      "name": "Deploy-k8s-staging",
+      "refId": "7",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [
+        "6"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "artifact",
+      "trafficManagement": {
+        "enabled": true,
+        "options": {
+          "enableTraffic": true,
+          "namespace": "staging",
+          "services": [
+            "service spring-music-service"
+          ],
+          "strategy": "highlander"
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "clusters": [
+        {
+          "account": "pcfone",
+          "application": "springmusic",
+          "applicationArtifact": {
+            "artifact": {
+              "artifactAccount": "pa-warroyo",
+              "id": "e6b4fb94-5937-4c48-9e1d-9272dbae0410",
+              "reference": "s3://warroyo-app-artifacts/spring-music/spring-music-1.0.jar",
+              "type": "s3/object"
+            }
+          },
+          "capacity": {
+            "desired": "1",
+            "max": "1",
+            "min": "1"
+          },
+          "cloudProvider": "cloudfoundry",
+          "freeFormDetails": "spring",
+          "manifest": {
+            "artifact": {
+              "artifactAccount": "warroyo",
+              "customKind": true,
+              "id": "8ce4f942-f7c1-4ac2-bd1f-936895579273",
+              "name": "cf/manifest-prod.yml",
+              "reference": "https://api.github.com/repos/warroyo/cnb-cicd-demo/contents/cf/manifest-prod.yml",
+              "type": "github/file"
+            }
+          },
+          "provider": "cloudfoundry",
+          "region": "pivot-warroyo > production",
+          "stack": "spring",
+          "startApplication": true,
+          "strategy": "highlander"
+        }
+      ],
+      "name": "Deploy-PCF-production",
+      "refId": "8",
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "type": "deploy"
+    },
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "failPipeline": false,
+      "manifestArtifactAccount": "embedded-artifact",
+      "manifestArtifactId": "d8e09704-7f33-401c-a2e2-ada5a63f92c2",
+      "moniker": {
+        "app": "springmusic"
+      },
+      "name": "Deploy-k8s-production",
+      "refId": "9",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [
+        "10"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "artifact",
+      "trafficManagement": {
+        "enabled": true,
+        "options": {
+          "enableTraffic": true,
+          "namespace": "production",
+          "services": [
+            "service spring-music-service"
+          ],
+          "strategy": "highlander"
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "completeOtherBranchesThenFail": true,
+      "continuePipeline": false,
+      "evaluateOverrideExpressions": false,
+      "expectedArtifacts": [
+        {
+          "defaultArtifact": {
+            "type": "embedded/base64"
+          },
+          "displayName": "spring-music-prod-k8-manifest",
+          "id": "d8e09704-7f33-401c-a2e2-ada5a63f92c2",
+          "matchArtifact": {
+            "kind": "base64",
+            "name": "spring-music-prod-k8-manifest",
+            "type": "embedded/base64"
+          },
+          "useDefaultArtifact": false
+        }
+      ],
+      "failPipeline": false,
+      "inputArtifacts": [
+        {
+          "account": "harbor-helm",
+          "id": "c5c8770b-ffee-4ded-abce-d99c05085012"
+        },
+        {
+          "account": "warroyo",
+          "id": "86f72c09-810b-44c4-bc66-45e8cfb8b00f"
+        }
+      ],
+      "name": "Bake (Manifest) - prod",
+      "namespace": "production",
+      "outputName": "spring-music",
+      "overrides": {},
+      "refId": "10",
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "templateRenderer": "HELM2",
+      "type": "bakeManifest"
+    }
+  ],
+  "triggers": [
+    {
+      "enabled": true,
+      "job": "main/spring-music-ci/image-scan",
+      "jobName": "image-scan",
+      "master": "concourse-infra-ci",
+      "project": "main/spring-music-ci",
+      "team": "main",
+      "type": "concourse"
+    }
+  ],
+  "updateTs": "1557352646000"
+}

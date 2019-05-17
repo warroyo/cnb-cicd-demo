@@ -1,0 +1,20 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: spinnaker.gcp.warroyo.com
+  namespace: spinnaker
+spec:
+  secretName: spinnaker-tls-prod
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: 'spinnaker.gcp.warroyo.com'
+  dnsNames:
+  - '*.spinnaker.gcp.warroyo.com'
+  acme:
+    config:
+    - dns01:
+        provider: dns
+      domains:
+      - '*.spinnaker.gcp.warroyo.com'
+      - spinnaker.gcp.warroyo.com
